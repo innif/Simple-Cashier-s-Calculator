@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Cashier\'s Calculator</string>
+    <string name="direction_up">Nach oben bewegen</string>
+    <string name="direction_down">Nach unten bewegen</string>
+    <string name="price">Preis</string>
+    <string name="move">Bewegen</string>
+    <string name="settings">Einstellungen</string>
+    <string name="delete">Löschen</string>
+    <string name="instruction">Produktname existiert bereits.</string>
+    <string name="instrution_empty">Bitte Einstellungen öffnen um ein Produkt hinzuzufügen.</string>
+</resources>

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Simple Cashier\'s Calculator</string>
+    <string name="direction_up">Move Up</string>
+    <string name="direction_down">Move Down</string>
+    <string name="price">Price</string>
+    <string name="move">Move</string>
+    <string name="settings">Settings</string>
+    <string name="delete">Delete</string>
+    <string name="instruction">"Product name already exists."</string>
+    <string name="instrution_empty">Please open settings to add a product.</string>
+</resources>
