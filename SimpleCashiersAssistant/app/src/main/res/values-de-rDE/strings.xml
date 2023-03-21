@@ -9,4 +9,9 @@
     <string name="delete">Löschen</string>
     <string name="instruction">Produktname existiert bereits.</string>
     <string name="instrution_empty">Bitte Einstellungen öffnen um ein Produkt hinzuzufügen.</string>
+    <string name="add_product">Produkt hinzufügen</string>
+    <string name="clear">Zurücksetzen</string>
+    <string name="new_product">Neues Produkt</string>
+    <string name="apply">Anwenden</string>
+    <string name="edit_product_info">Produkt bearbeiten</string>
 </resources>

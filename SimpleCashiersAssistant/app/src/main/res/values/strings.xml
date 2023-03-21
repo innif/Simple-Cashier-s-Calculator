@@ -8,4 +8,13 @@
     <string name="delete">Delete</string>
     <string name="instruction">"Product name already exists."</string>
     <string name="instrution_empty">Please open settings to add a product.</string>
+    <string name="add_product">Add Product</string>
+    <string name="clear">Clear</string>
+    <string name="new_product">New Product</string>
+    <string name="apply">Apply</string>
+    <string name="edit_product_info">Edit Product Info</string>
+    <string name="grid_collumns">Grid Collumns</string>
+    <string name="grid_rows">Grid Rows</string>
+    <string name="currency">Currency</string>
+    <string name="not_empty">Title can not be empty.</string>
 </resources>

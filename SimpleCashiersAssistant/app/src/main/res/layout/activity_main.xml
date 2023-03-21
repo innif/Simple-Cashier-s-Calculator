@@ -10,8 +10,7 @@
         android:id="@+id/tvInstructions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:padding="16dp"
         android:text="@string/instrution_empty"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toTopOf="@+id/tvSum"
@@ -31,7 +30,8 @@
         app:fontFamily="sans-serif"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardcodedText" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -51,38 +51,17 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="@string/settings"
-            app:srcCompat="@drawable/ic_baseline_settings_24" />
+            app:srcCompat="@drawable/baseline_menu_24" />
 
         <Button
             android:id="@+id/bClear"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_weight="1"
-            android:text="Clear"
+            android:text="@string/clear"
             app:backgroundTint="#D32F2F" />
 
     </LinearLayout>
-
-    <TableLayout
-        android:id="@+id/tlButtons"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/tvSum"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-        </TableRow>
-    </TableLayout>
 
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/glButtons"
@@ -97,7 +76,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:rowCount="6" >
+        app:rowCount="6">
 
     </androidx.gridlayout.widget.GridLayout>
 

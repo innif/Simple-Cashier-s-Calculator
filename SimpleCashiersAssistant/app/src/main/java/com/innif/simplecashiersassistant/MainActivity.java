@@ -6,11 +6,13 @@ import androidx.gridlayout.widget.GridLayout;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +24,9 @@ import java.util.Set;
 //TODO custom colors
 //TODO custom grid
 //TODO import-export
+//TODO delete all button
 
 public class MainActivity extends AppCompatActivity {
-
     List<Product> products = new LinkedList<>();
     GridLayout gl;
     TextView sumView;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button buttonClear = findViewById(R.id.bClear);
         buttonClear.setOnClickListener((view)->clear());
-        findViewById(R.id.bSettings).setOnClickListener(this::settingsDialog);
+        findViewById(R.id.bSettings).setOnClickListener(this::onOptionsClicked);
 
         SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
         currency = prefs.getString("currency", "€");
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean longClick(Product p){
-        configDialog(p);
+        configDialog(p, false);
         return true;
     }
 
@@ -128,13 +130,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void settingsDialog(View view){
+    private void onOptionsClicked(View view){
+        PopupMenu popupMenu = new PopupMenu(MainActivity.this, view);
+
+        popupMenu.getMenuInflater().inflate(R.menu.options_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()){
+                case (R.id.menuitem_settings):
+                    settingsDialog();
+                    break;
+                case (R.id.menuitem_addProduct):
+                    configDialog(new Product("", 1), true);
+                    break;
+            }
+            return true;
+        });
+        popupMenu.show();
+    }
+
+    private void settingsDialog(){
         View v = getLayoutInflater().inflate(R.layout.settings_dialog, null);
         final EditText[] currency = {v.findViewById(R.id.etCurrency)};
         currency[0].setText(this.currency);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(v).setTitle("Settings");
-        builder.setPositiveButton("Apply", (dialogInterface, i) -> {
+        builder.setView(v).setTitle(R.string.settings);
+        builder.setPositiveButton(R.string.apply, (dialogInterface, i) -> {
             this.currency = currency[0].getText().toString();
             SharedPreferences.Editor prefs = getSharedPreferences("settings", MODE_PRIVATE).edit();
             prefs.putString("currency", this.currency);
@@ -143,27 +163,28 @@ public class MainActivity extends AppCompatActivity {
             updatePrice();
             dialogInterface.dismiss();
         });
+
         AlertDialog dialog = builder.create();
-        v.findViewById(R.id.bAddProduct).setOnClickListener((view2)->{
-            Product p = new Product("New Product", 1);
-            configDialog(p);
-            products.add(p);
-            dialog.dismiss();
-        });
         dialog.show();
     }
 
-    private boolean checkForDoubleName(String name, Product p){
+    private boolean checkProductName(Product p){
+        if (p.title.equals("")){
+            Toast.makeText(getApplicationContext(), R.string.not_empty, Toast.LENGTH_SHORT).show();
+            return false;
+        }
         for (Product p2 : products){
             if (p == p2)
                 continue;
-            if (name.equals(p2.title))
-                return true;
+            if (p.title.equals(p2.title)) {
+                Toast.makeText(getApplicationContext(), R.string.instruction, Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
-    private void configDialog(Product p){
+    private void configDialog(Product p, boolean newProduct){
         View v = getLayoutInflater().inflate(R.layout.product_config_dialog, null);
         EditText etName = v.findViewById(R.id.etName);
         EditText etPrice = v.findViewById(R.id.etPrice);
@@ -171,24 +192,22 @@ public class MainActivity extends AppCompatActivity {
         tvCurrency.setText(currency);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(v).setTitle("Edit Product Info");
-        builder.setPositiveButton("Apply", (dialogInterface, i) -> {
-            String title = etName.getText().toString();
-            if (checkForDoubleName(title, p)){
-                Toast toast = Toast.makeText(this, getString(R.string.instruction), Toast.LENGTH_LONG);
-                toast.show();
-            }
-            else {
-                p.title = title;
-            }
-            p.price = Float.parseFloat(etPrice.getText().toString());
-            p.invalidateView();
-            update();
-            save();
-        });
+        builder.setView(v).setTitle(R.string.edit_product_info);
+        builder.setPositiveButton(R.string.apply, null);
         AlertDialog dialog = builder.create();
-
         dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(view -> {
+            p.title = etName.getText().toString();
+            if (checkProductName(p)){
+                p.price = Float.parseFloat(etPrice.getText().toString());
+                p.invalidateView();
+                if (newProduct)
+                    products.add(p);
+                update();
+                save();
+                dialog.dismiss();
+            }
+        });
         dialog.findViewById(R.id.bUp).setOnClickListener(view1 -> {
             int index = products.indexOf(p);
             if (index > 0){

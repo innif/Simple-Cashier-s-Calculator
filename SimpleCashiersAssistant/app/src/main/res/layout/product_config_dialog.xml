@@ -62,7 +62,7 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="@string/price"
-                    android:inputType="number" />
+                    android:inputType="numberDecimal" />
 
                 <TextView
                     android:id="@+id/tvPriceCurrency"
