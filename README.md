@@ -1,0 +1,1 @@
+# Simple Cashier's Calculator
