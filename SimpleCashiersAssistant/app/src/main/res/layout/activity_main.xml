@@ -50,6 +50,7 @@
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="@color/optionsMenuBackground"
             android:contentDescription="@string/settings"
             app:srcCompat="@drawable/baseline_menu_24" />
 
@@ -59,7 +60,8 @@
             android:layout_height="80dp"
             android:layout_weight="1"
             android:text="@string/clear"
-            app:backgroundTint="#D32F2F" />
+            android:textColor="@color/clearTextColor"
+            app:backgroundTint="@color/clearButton" />
 
     </LinearLayout>
 

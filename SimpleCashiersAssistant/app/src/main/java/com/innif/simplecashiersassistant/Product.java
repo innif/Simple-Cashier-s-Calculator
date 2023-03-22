@@ -83,11 +83,11 @@ public class Product {
             return;
 
         if (count > 0){
-            setButtonColor(R.color.colorPrimaryVariant);
+            setButtonColor(R.color.productButtonSelected);
             tv.setText(Integer.toString(count));
         }
         else {
-            setButtonColor(R.color.colorPrimary);
+            setButtonColor(R.color.productButton);
             tv.setText("");
         }
 
