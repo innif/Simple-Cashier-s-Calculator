@@ -98,8 +98,7 @@ public class Product {
 
     private void setButtonColor(int colorId){
         int color = context.getResources().getColor(colorId, context.getTheme());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) b.setBackgroundTintList(ColorStateList.valueOf(color));
-        else  b.setBackgroundColor(color);
+        b.setBackgroundTintList(ColorStateList.valueOf(color));
     }
 
     public void save(){
