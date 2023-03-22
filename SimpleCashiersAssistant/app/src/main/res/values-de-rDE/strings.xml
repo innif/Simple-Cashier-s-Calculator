@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Simple Cashier\'s Calculator</string>
     <string name="direction_up">Nach oben bewegen</string>
     <string name="direction_down">Nach unten bewegen</string>
     <string name="price">Preis</string>
@@ -14,4 +13,10 @@
     <string name="new_product">Neues Produkt</string>
     <string name="apply">Anwenden</string>
     <string name="edit_product_info">Produkt bearbeiten</string>
+    <string name="grid_collumns">Raster Zeilen</string>
+    <string name="grid_rows">Raster Spalten</string>
+    <string name="currency">Währung</string>
+    <string name="not_empty">Name darf nicht leer sein.</string>
+    <string name="grid_full">Zu wenig Platz, bitte lösche ein Produkt oder passe das Raster an.</string>
+    <string name="grid_to_small">Zu viele Produkte für das gewählte Raster.</string>
 </resources>

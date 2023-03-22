@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Simple Cashier\'s Calculator</string>
+    <string name="app_name" translatable="false">Simple Cashier\'s Calculator</string>
     <string name="direction_up">Move Up</string>
     <string name="direction_down">Move Down</string>
     <string name="price">Price</string>
@@ -17,4 +17,6 @@
     <string name="grid_rows">Grid Rows</string>
     <string name="currency">Currency</string>
     <string name="not_empty">Title can not be empty.</string>
+    <string name="grid_full">Not enough space, delete products or change the grid-size</string>
+    <string name="grid_to_small">Too many products for this grid size.</string>
 </resources>

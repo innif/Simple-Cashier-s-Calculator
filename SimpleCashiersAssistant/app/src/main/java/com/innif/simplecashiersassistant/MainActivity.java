@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,11 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
         currency = prefs.getString("currency", "€");
-
-        setGrid(4, 3);
+        rows = prefs.getInt("rows", 4);
+        columns = prefs.getInt("columns", 3);
 
         load();
-        update();
+        setGrid(rows, columns);
         updatePrice();
     }
 
@@ -70,11 +71,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setGrid(int rows, int columns){
+        gl.removeAllViews();
         gl.setRowCount(rows);
         gl.setColumnCount(columns);
         this.rows = rows;
         this.columns = columns;
         totalCells = rows * columns;
+
+        SharedPreferences.Editor prefEditor = getSharedPreferences("settings", MODE_PRIVATE).edit();
+        prefEditor.putInt("columns", columns);
+        prefEditor.putInt("rows", rows);
+        prefEditor.apply();
         update();
     }
 
@@ -157,19 +164,31 @@ public class MainActivity extends AppCompatActivity {
         final EditText[] currency = {v.findViewById(R.id.etCurrency)};
         currency[0].setText(this.currency);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Spinner spinnerRows = v.findViewById(R.id.spinnerRows);
+        Spinner spinnerColumns = v.findViewById(R.id.spinnerCollumns);
+        spinnerRows.setSelection(rows-3); //FIXME;
+        spinnerColumns.setSelection(columns-1); //FIXME
         builder.setView(v).setTitle(R.string.settings);
-        builder.setPositiveButton(R.string.apply, (dialogInterface, i) -> {
+        builder.setPositiveButton(R.string.apply, null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener((view)->{
+            int rows = Integer.parseInt(spinnerRows.getSelectedItem().toString());
+            int columns = Integer.parseInt(spinnerColumns.getSelectedItem().toString());
+            if (rows * columns < products.size()){
+                Toast.makeText(getApplicationContext(), R.string.grid_to_small, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            setGrid(rows, columns);
             this.currency = currency[0].getText().toString();
             SharedPreferences.Editor prefs = getSharedPreferences("settings", MODE_PRIVATE).edit();
             prefs.putString("currency", this.currency);
             prefs.apply();
             update();
             updatePrice();
-            dialogInterface.dismiss();
+            dialog.dismiss();
         });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
     private boolean checkProductName(Product p){
@@ -202,6 +221,10 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(view -> {
             p.title = etName.getText().toString();
+            if (products.size() >= totalCells){
+                Toast.makeText(getApplicationContext(), R.string.grid_full, Toast.LENGTH_LONG).show();
+                return;
+            }
             if (checkProductName(p)){
                 p.price = Float.parseFloat(etPrice.getText().toString());
                 p.invalidateView();
