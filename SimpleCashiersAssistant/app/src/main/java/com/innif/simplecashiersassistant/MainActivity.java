@@ -214,6 +214,11 @@ public class MainActivity extends AppCompatActivity {
         TextView tvCurrency = v.findViewById(R.id.tvPriceCurrency);
         tvCurrency.setText(currency);
 
+        if(newProduct){
+            v.findViewById(R.id.bDelete).setVisibility(View.GONE);
+            v.findViewById(R.id.tableRowMove).setVisibility(View.GONE);
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(v).setTitle(R.string.edit_product_info);
         builder.setPositiveButton(R.string.apply, null);
