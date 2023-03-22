@@ -8,14 +8,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="colorPrimary">#2196F3</color>
-    <color name="colorPrimaryVariant">#64B5F6</color>
+    <color name="colorPrimary">#0D47A1</color>
+    <color name="colorPrimaryVariant">#FF6F00</color>
     <color name="colorOnPrimary">@color/white</color>
 
-    <color name="productButton">#2196F3</color>
-    <color name="productButtonSelected">#FF9800</color>
+    <color name="productButton">#0D47A1</color>
+    <color name="productButtonSelected">#FF6F00</color>
     <color name="clearButton">#C62828</color>
     <color name="clearTextColor">#FFFFFF</color>
     <color name="optionsMenu">#FFFFFF</color>
-    <color name="optionsMenuBackground">#1565C0</color>
+    <color name="optionsMenuBackground">#0D47A1</color>
 </resources>

@@ -8,8 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="colorPrimary">@color/purple_200</color>
-    <color name="colorPrimaryVariant">#2196F3</color>
+    <color name="colorPrimary">#0D47A1</color>
+    <color name="colorPrimaryVariant">#FF6F00</color>
     <color name="colorOnPrimary">@color/black</color>
 
 
@@ -18,5 +18,5 @@
     <color name="clearButton">#EF5350</color>
     <color name="clearTextColor">#000000</color>
     <color name="optionsMenu">#000000</color>
-    <color name="optionsMenuBackground">#64B5F6</color>
+    <color name="optionsMenuBackground">#90CAF9</color>
 </resources>
