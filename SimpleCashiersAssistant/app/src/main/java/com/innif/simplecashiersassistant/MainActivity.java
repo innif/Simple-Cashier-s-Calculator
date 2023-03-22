@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     float sum;
     int totalCells;
     String currency;
+    private int rows;
+    private int columns;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     private void setGrid(int rows, int columns){
         gl.setRowCount(rows);
         gl.setColumnCount(columns);
+        this.rows = rows;
+        this.columns = columns;
         totalCells = rows * columns;
         update();
     }
