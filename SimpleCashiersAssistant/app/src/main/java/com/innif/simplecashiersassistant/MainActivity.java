@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 //TODO custom colors
-//TODO custom grid
 //TODO import-export
-//TODO delete all button
 
 public class MainActivity extends AppCompatActivity {
     List<Product> products = new LinkedList<>();
@@ -170,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
         spinnerColumns.setSelection(columns-1); //FIXME
         builder.setView(v).setTitle(R.string.settings);
         builder.setPositiveButton(R.string.apply, null);
+        Button deleteAll = v.findViewById(R.id.buttonDeleteAll);
+        deleteAll.setOnClickListener(view -> deleteAll());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -264,5 +264,22 @@ public class MainActivity extends AppCompatActivity {
         });
         etName.setText(p.title);
         etPrice.setText(Float.toString(p.price));
+    }
+
+    private void deleteAll(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Confirm Delete")
+                .setMessage("Are you sure to delete all products?")
+                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    products.clear();
+                    update();
+                    save();
+                    dialogInterface.dismiss();
+                })
+                .setNegativeButton("No", (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

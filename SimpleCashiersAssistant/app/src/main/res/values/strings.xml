@@ -19,4 +19,5 @@
     <string name="not_empty">Title can not be empty.</string>
     <string name="grid_full">Not enough space, delete products or change the grid-size</string>
     <string name="grid_to_small">Too many products for this grid size.</string>
+    <string name="delete_all_products">Delete All Products</string>
 </resources>
