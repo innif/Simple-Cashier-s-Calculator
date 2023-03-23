@@ -20,4 +20,10 @@
     <string name="grid_full">Not enough space, delete products or change the grid-size</string>
     <string name="grid_to_small">Too many products for this grid size.</string>
     <string name="delete_all_products">Delete All Products</string>
+    <string name="seperator_error">Title can not contain \";#;\"</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="confirm_delete">Confirm Delete</string>
+    <string name="are_aou_sure_delete">Are you sure to delete all products?</string>
+    <string name="standard_currency" translatable="false">€</string>
 </resources>

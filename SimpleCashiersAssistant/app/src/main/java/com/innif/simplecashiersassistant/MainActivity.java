@@ -268,18 +268,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void deleteAll(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle("Confirm Delete")
-                .setMessage("Are you sure to delete all products?")
-                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                .setTitle(R.string.confirm_delete)
+                .setMessage(R.string.are_aou_sure_delete)
+                .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                     products.clear();
                     update();
                     save();
                     dialogInterface.dismiss();
                 })
-                .setNegativeButton("No", (dialogInterface, i) -> {
+                .setNegativeButton(R.string.no, (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void loadFromString(String s){
+        String[] elements = s.split(getString(R.string.seperator));
     }
 }
