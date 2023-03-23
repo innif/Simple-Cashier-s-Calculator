@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="seperator" translatable="false">;#;</string>
+    <string name="settings_currency" translatable="false">currency</string>
+    <string name="settings_products" translatable="false">products</string>
+    <string name="settings_setting_file" translatable="false">settings</string>
+    <string name="settings_columns" translatable="false">columns</string>
+    <string name="settings_rows" translatable="false">rows</string>
+</resources>

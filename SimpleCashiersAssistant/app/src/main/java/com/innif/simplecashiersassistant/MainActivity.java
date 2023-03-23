@@ -46,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
         buttonClear.setOnClickListener((view)->clear());
         findViewById(R.id.bSettings).setOnClickListener(this::onOptionsClicked);
 
-        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
-        currency = prefs.getString("currency", "€");
-        rows = prefs.getInt("rows", 4);
-        columns = prefs.getInt("columns", 3);
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_setting_file), MODE_PRIVATE);
+        currency = prefs.getString(getString(R.string.settings_currency), getString(R.string.standard_currency));
+        rows = prefs.getInt(getString(R.string.settings_rows), 4);
+        columns = prefs.getInt(getString(R.string.settings_columns), 3);
 
         load();
         setGrid(rows, columns);
@@ -64,10 +64,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void addArticle(String name, float price){
-        products.add(new Product(name, price));
-    }
-
     private void setGrid(int rows, int columns){
         gl.removeAllViews();
         gl.setRowCount(rows);
@@ -76,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
         this.columns = columns;
         totalCells = rows * columns;
 
-        SharedPreferences.Editor prefEditor = getSharedPreferences("settings", MODE_PRIVATE).edit();
-        prefEditor.putInt("columns", columns);
-        prefEditor.putInt("rows", rows);
+        SharedPreferences.Editor prefEditor = getSharedPreferences(getString(R.string.settings_setting_file), MODE_PRIVATE).edit();
+        prefEditor.putInt(getString(R.string.settings_columns), columns);
+        prefEditor.putInt(getString(R.string.settings_rows), rows);
         prefEditor.apply();
         update();
     }
@@ -125,15 +121,15 @@ public class MainActivity extends AppCompatActivity {
             p.save();
             productNames.add(p.title);
         }
-        SharedPreferences sharedPref = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settings_setting_file), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putStringSet("products", new HashSet<>(productNames));
+        editor.putStringSet(getString(R.string.settings_products), new HashSet<>(productNames));
         editor.apply();
     }
 
     private void load(){
-        SharedPreferences sharedPref = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        Set<String> products =  sharedPref.getStringSet("products", new HashSet<>());
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settings_setting_file), Context.MODE_PRIVATE);
+        Set<String> products =  sharedPref.getStringSet(getString(R.string.settings_products), new HashSet<>());
         for (String p : products){
             this.products.add(new Product(p, this));
         }
@@ -183,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
             setGrid(rows, columns);
             this.currency = currency[0].getText().toString();
             SharedPreferences.Editor prefs = getSharedPreferences("settings", MODE_PRIVATE).edit();
-            prefs.putString("currency", this.currency);
+            prefs.putString(getString(R.string.settings_currency), this.currency);
             prefs.apply();
             update();
             updatePrice();
@@ -192,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkProductName(Product p){
+        if (p.title.contains(getString(R.string.seperator))){
+            Toast.makeText(getApplicationContext(), R.string.seperator_error, Toast.LENGTH_SHORT).show();
+            return false;
+        }
         if (p.title.equals("")){
             Toast.makeText(getApplicationContext(), R.string.not_empty, Toast.LENGTH_SHORT).show();
             return false;
