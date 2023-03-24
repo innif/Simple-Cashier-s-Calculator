@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="seperator" translatable="false">&lt;;&gt;</string>
+    <string name="settings_string" translatable="false">settings_string</string>
+    <string name="settings_setting_file" translatable="false">settings</string>
+
+    <integer name="settings_rows_pos">0</integer>
+    <integer name="settings_columns_pos">1</integer>
+    <integer name="settings_n_products_pos">2</integer>
+    <integer name="settings_currency_pos">3</integer>
+    <integer name="settings_head_size">3</integer>
+</resources>

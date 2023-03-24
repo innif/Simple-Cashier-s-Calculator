@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="standard_rows">4</integer>
+    <integer name="standard_columns">3</integer>
+    <string name="standard_currency" translatable="false">€</string>
+</resources>

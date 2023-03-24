@@ -20,7 +20,7 @@
     <string name="grid_full">Not enough space, delete products or change the grid-size</string>
     <string name="grid_to_small">Too many products for this grid size.</string>
     <string name="delete_all_products">Delete All Products</string>
-    <string name="seperator_error">Title can not contain \";#;\"</string>
+    <string name="seperator_error">Title must not contain &lt;;&gt;</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="confirm_delete">Confirm Delete</string>
@@ -40,4 +40,5 @@
     <string name="import_config">Import Configuration</string>
     <string name="import_button">Import</string>
     <string name="cancel">Cancel</string>
+    <string name="not_implemented">not yet implemented</string>
 </resources>

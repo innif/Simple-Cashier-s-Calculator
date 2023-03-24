@@ -20,7 +20,7 @@
     <string name="grid_full">Zu wenig Platz, bitte lösche ein Produkt oder passe das Raster an.</string>
     <string name="grid_to_small">Zu viele Produkte für das gewählte Raster.</string>
     <string name="delete_all_products">Alle Produkte löschen</string>
-    <string name="seperator_error">Name darf nicht \";#;\" enthalten</string>
+    <string name="seperator_error">Name darf nicht &lt;;&gt; enthalten</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
     <string name="confirm_delete">Löschen bestätigen</string>
