@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="?dialogPreferredPadding"
+    android:paddingTop="8dp"
+    android:paddingRight="?dialogPreferredPadding"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/textViewExport"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/instruction_export" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <Button
+        android:id="@+id/buttonExportClipboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/copy_to_clipboard" />
+
+    <Button
+        android:id="@+id/buttonExportShare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/share_code" />
+
+    <Button
+        android:id="@+id/buttonExportQR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/generate_qr_code"
+        android:visibility="gone" />
+
+</LinearLayout>

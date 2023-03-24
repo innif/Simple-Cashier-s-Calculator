@@ -1,13 +1,18 @@
 package com.innif.simplecashiersassistant;
 
+import androidx.annotation.IntegerRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,10 +25,12 @@ import android.widget.Toast;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 //TODO custom colors
-//TODO import-export
+//TODO import-export QR
+//TODO import-export File
 
 public class MainActivity extends AppCompatActivity {
     List<Product> products = new LinkedList<>();
@@ -34,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     String currency;
     private int rows;
     private int columns;
+    Locale locale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +55,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bSettings).setOnClickListener(this::onOptionsClicked);
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_setting_file), MODE_PRIVATE);
-        currency = prefs.getString(getString(R.string.settings_currency), getString(R.string.standard_currency));
-        rows = prefs.getInt(getString(R.string.settings_rows), 4);
-        columns = prefs.getInt(getString(R.string.settings_columns), 3);
 
         load();
         setGrid(rows, columns);
@@ -71,15 +76,14 @@ public class MainActivity extends AppCompatActivity {
         this.rows = rows;
         this.columns = columns;
         totalCells = rows * columns;
-
-        SharedPreferences.Editor prefEditor = getSharedPreferences(getString(R.string.settings_setting_file), MODE_PRIVATE).edit();
-        prefEditor.putInt(getString(R.string.settings_columns), columns);
-        prefEditor.putInt(getString(R.string.settings_rows), rows);
-        prefEditor.apply();
         update();
     }
 
     private void update(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            locale = getResources().getConfiguration().getLocales().get(0);
+        else locale = getResources().getConfiguration().locale;
+
         if (products.isEmpty())
             findViewById(R.id.tvInstructions).setVisibility(View.VISIBLE);
         else
@@ -98,16 +102,15 @@ public class MainActivity extends AppCompatActivity {
                 public boolean productLongClicked(Product p) {
                     return longClick(p);
                 }
-            }, currency);
+            }, currency, locale);
         }
         for (int i = 0; i < totalCells - products.size(); i++) {
             View v = this.getLayoutInflater().inflate(R.layout.empty_button, gl);
         }
     }
 
-    @SuppressLint("DefaultLocale")
     private void updatePrice(){
-        sumView.setText(String.format("%.2f %s", sum, currency));
+        sumView.setText(String.format(locale, "%.2f %s", sum, currency)); //FIXME unterschiedliche Darstellung nach Währung
     }
 
     private boolean longClick(Product p){
@@ -116,22 +119,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void save(){
-        LinkedList<String> productNames = new LinkedList<>();
-        for (Product p : products) {
-            p.save();
-            productNames.add(p.title);
-        }
+        String settings = saveToString();
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settings_setting_file), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putStringSet(getString(R.string.settings_products), new HashSet<>(productNames));
+        editor.putString(getString(R.string.settings_string), settings);
         editor.apply();
     }
 
     private void load(){
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settings_setting_file), Context.MODE_PRIVATE);
-        Set<String> products =  sharedPref.getStringSet(getString(R.string.settings_products), new HashSet<>());
-        for (String p : products){
-            this.products.add(new Product(p, this));
+        String settings =  sharedPref.getString(getString(R.string.settings_string), "");
+        if(!loadFromString(settings)) {
+            setGrid(getInt(R.integer.standard_rows), getInt(R.integer.standard_columns));
+            currency = getString(R.string.standard_currency);
+            products = new LinkedList<>();
+            save();
         }
     }
 
@@ -165,7 +167,11 @@ public class MainActivity extends AppCompatActivity {
         builder.setView(v).setTitle(R.string.settings);
         builder.setPositiveButton(R.string.apply, null);
         Button deleteAll = v.findViewById(R.id.buttonDeleteAll);
+        Button bImport = v.findViewById(R.id.buttonImport);
+        Button bExport = v.findViewById(R.id.buttonExport);
         deleteAll.setOnClickListener(view -> deleteAll());
+        bImport.setOnClickListener(view -> onImport());
+        bExport.setOnClickListener(view -> onExport());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -178,9 +184,7 @@ public class MainActivity extends AppCompatActivity {
             }
             setGrid(rows, columns);
             this.currency = currency[0].getText().toString();
-            SharedPreferences.Editor prefs = getSharedPreferences("settings", MODE_PRIVATE).edit();
-            prefs.putString(getString(R.string.settings_currency), this.currency);
-            prefs.apply();
+            save();
             update();
             updatePrice();
             dialog.dismiss();
@@ -263,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
         });
         etName.setText(p.title);
-        etPrice.setText(Float.toString(p.price));
+        etPrice.setText(String.format(locale,"%f", p.price));
     }
 
     private void deleteAll(){
@@ -276,14 +280,113 @@ public class MainActivity extends AppCompatActivity {
                     save();
                     dialogInterface.dismiss();
                 })
-                .setNegativeButton(R.string.no, (dialogInterface, i) -> {
-                    dialogInterface.dismiss();
-                });
+                .setNegativeButton(R.string.no, (dialogInterface, i) -> dialogInterface.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
-    private void loadFromString(String s){
-        String[] elements = s.split(getString(R.string.seperator));
+    private void onImport(){
+        View v = getLayoutInflater().inflate(R.layout.import_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.import_config)
+                .setView(v)
+                .setPositiveButton(R.string.import_button, null)
+                .setNegativeButton(R.string.cancel, null).create();
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(view -> {
+            EditText code = v.findViewById(R.id.editTextImportCode);
+            String s = code.getText().toString();
+            if(loadFromString(s)){
+                save();
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void onExport(){
+        String exportData = saveToString();
+
+        View v = getLayoutInflater().inflate(R.layout.export_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.export_config)
+                .setView(v)
+                .setPositiveButton(R.string.done, null).create();
+        dialog.show();
+
+        v.findViewById(R.id.buttonExportClipboard).setOnClickListener(view -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(getString(R.string.export_title), exportData);
+            clipboard.setPrimaryClip(clip);
+        });
+        v.findViewById(R.id.buttonExportShare).setOnClickListener(view -> {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TITLE, R.string.export_title);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, exportData);
+            sendIntent.setType("text/plain");
+
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
+        });
+        v.findViewById(R.id.buttonExportQR).setOnClickListener(view -> Toast.makeText(this, R.string.not_implemented, Toast.LENGTH_LONG).show());
+    }
+
+    private String saveToString(){
+        String sep = getString(R.string.seperator);
+        StringBuilder builder = new StringBuilder();
+        builder.append(rows).append(sep)
+                .append(columns).append(sep)
+                .append(products.size()).append(sep)
+                .append(currency).append(sep);
+        for (Product p : products) {
+            builder.append(p.title).append(sep);
+        }
+        for (Product p : products) {
+            builder.append(p.price).append(sep);
+        }
+        return builder.toString();
+    }
+
+    private boolean loadFromString(String s){
+        List<Product> newProducts = new LinkedList<>();
+        int rows, columns, nProducts;
+        String currency;
+        try {
+            String[] elements = s.split(getString(R.string.seperator));
+            if(elements.length < getInt(R.integer.settings_head_size)){
+                Toast.makeText(getApplicationContext(), R.string.error_loading, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            rows = Integer.parseInt(elements[getInt(R.integer.settings_rows_pos)]);
+            columns = Integer.parseInt(elements[getInt(R.integer.settings_columns_pos)]);
+            nProducts = Integer.parseInt(elements[getInt(R.integer.settings_n_products_pos)]);
+            currency = elements[getInt(R.integer.settings_currency_pos)];
+            if (elements.length < getInt(R.integer.settings_head_size) + nProducts * 2 || rows <= 0 || columns <= 0){
+                Toast.makeText(getApplicationContext(), R.string.error_loading, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            for (int i = 0; i < nProducts; i++){
+                Product p = new Product(
+                        elements[getInt(R.integer.settings_head_size)+i],
+                        Float.parseFloat(elements[getInt(R.integer.settings_head_size)+nProducts+i]));
+                newProducts.add(p);
+            }
+        }
+        catch (Exception e){
+            Toast.makeText(getApplicationContext(), R.string.error_loading, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        // apply loaded data
+        products.clear();
+        this.currency = currency;
+        setGrid(rows, columns);
+        products.addAll(newProducts);
+        update();
+        updatePrice();
+        return true;
+    }
+
+    private int getInt(@IntegerRes int id){
+        return getResources().getInteger(id);
     }
 }

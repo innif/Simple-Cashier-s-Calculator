@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.util.Locale;
+
 public class Product {
     float price;
     String title;
@@ -28,12 +30,6 @@ public class Product {
         public abstract boolean productLongClicked(Product p);
     }
 
-    public Product(String title, Context context){
-        this.title = title;
-        SharedPreferences sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        price = sharedPref.getFloat(title, 0f);
-    }
-
     public Product(String title, float price){
         this.title = title;
         this.price = price;
@@ -43,8 +39,7 @@ public class Product {
         v = null;
     }
 
-    @SuppressLint("DefaultLocale")
-    public View getView(Activity activity, ViewGroup parent, ProductSelectListener selectListener, String currency){
+    public View getView(Activity activity, ViewGroup parent, ProductSelectListener selectListener, String currency, Locale locale){
         if (this.currency != null && this.currency.equals(currency) && v != null){
             this.currency = currency;
             parent.addView(v);
@@ -56,7 +51,7 @@ public class Product {
         b = v.findViewById(R.id.bArticle);
         tv = v.findViewById(R.id.tvCount);
         TextView tvPrice = v.findViewById(R.id.tvPrice);
-        tvPrice.setText(String.format("%.2f %s", price, currency));
+        tvPrice.setText(String.format(locale, "%.2f %s", price, currency));
         updateCount();
         b.setOnClickListener(view -> selectListener.productClicked(p));
         b.setOnLongClickListener(view -> selectListener.productLongClicked(p));
@@ -99,11 +94,5 @@ public class Product {
     private void setButtonColor(int colorId){
         int color = context.getResources().getColor(colorId, context.getTheme());
         b.setBackgroundTintList(ColorStateList.valueOf(color));
-    }
-
-    public void save(){
-        SharedPreferences.Editor sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE).edit();
-        sharedPref.putFloat(title, price);
-        sharedPref.apply();
     }
 }

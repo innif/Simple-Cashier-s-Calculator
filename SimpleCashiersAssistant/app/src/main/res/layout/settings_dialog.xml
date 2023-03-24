@@ -89,4 +89,29 @@
         android:backgroundTint="@color/clearButton"
         android:text="@string/delete_all_products" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonImport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Import" />
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0" />
+
+        <Button
+            android:id="@+id/buttonExport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Export" />
+    </LinearLayout>
+
 </LinearLayout>
