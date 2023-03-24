@@ -26,4 +26,17 @@
     <string name="confirm_delete">Löschen bestätigen</string>
     <string name="are_aou_sure_delete">Bist du dir sicher, dass du alle Produkte löschen möchtest?</string>
     <string name="error_loading">Fehler beim Laden</string>
+    <string name="enter_code">Code eingeben</string>
+    <string name="config_instruction">Code eingeben um Konfiguration zu laden</string>
+    <string name="export_as_text">Als Text exportieren</string>
+    <string name="copy_to_clipboard">In Zwischenablage kopieren</string>
+    <string name="share_code">Code teilen</string>
+    <string name="generate_qr_code">QR-Code generieren</string>
+    <string name="instruction_export">Code wurde generiert. Du kannst den Code als Text auf jedem beliebigen Gerät in der App eingeben um die Konfiguration zu übernehmen. Wie möchtest du den Code teilen?</string>
+    <string name="done">Fertig</string>
+    <string name="export_config">Konfiguration exportieren</string>
+    <string name="import_config">Konfiguration importieren</string>
+    <string name="import_button">Importieren</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="not_implemented">noch nicht implementiert</string>
 </resources>

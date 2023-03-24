@@ -6,6 +6,7 @@ import androidx.gridlayout.widget.GridLayout;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void load(){
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settings_setting_file), Context.MODE_PRIVATE);
-        String settings =  sharedPref.getString(getString(R.string.settings_string), "");
+        String settings =  sharedPref.getString(getString(R.string.settings_string), getString(R.string.settings_string_initial_value));
         if(!loadFromString(settings)) {
             setGrid(getInt(R.integer.standard_rows), getInt(R.integer.standard_columns));
             currency = getString(R.string.standard_currency);
@@ -169,12 +170,12 @@ public class MainActivity extends AppCompatActivity {
         Button deleteAll = v.findViewById(R.id.buttonDeleteAll);
         Button bImport = v.findViewById(R.id.buttonImport);
         Button bExport = v.findViewById(R.id.buttonExport);
-        deleteAll.setOnClickListener(view -> deleteAll());
-        bImport.setOnClickListener(view -> onImport());
-        bExport.setOnClickListener(view -> onExport());
 
         AlertDialog dialog = builder.create();
         dialog.show();
+        deleteAll.setOnClickListener(view -> deleteAll());
+        bImport.setOnClickListener(view -> onImport(dialog));
+        bExport.setOnClickListener(view -> onExport());
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener((view)->{
             int rows = Integer.parseInt(spinnerRows.getSelectedItem().toString());
             int columns = Integer.parseInt(spinnerColumns.getSelectedItem().toString());
@@ -267,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
         });
         etName.setText(p.title);
-        etPrice.setText(String.format(locale,"%f", p.price));
+        etPrice.setText(Float.toString(p.price));
     }
 
     private void deleteAll(){
@@ -285,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void onImport(){
+    private void onImport(AlertDialog settingsDialog){
         View v = getLayoutInflater().inflate(R.layout.import_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.import_config)
@@ -298,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
             String s = code.getText().toString();
             if(loadFromString(s)){
                 save();
+                settingsDialog.dismiss();
                 dialog.dismiss();
             }
         });
@@ -348,6 +350,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean loadFromString(String s){
+        if(s.equals(getString(R.string.settings_string_initial_value)))
+            return false;
         List<Product> newProducts = new LinkedList<>();
         int rows, columns, nProducts;
         String currency;
