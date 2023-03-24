@@ -101,7 +101,7 @@ public class Product {
         b.setBackgroundTintList(ColorStateList.valueOf(color));
     }
 
-    public void save(){
+    public void save(Context context){
         SharedPreferences.Editor sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE).edit();
         sharedPref.putFloat(title, price);
         sharedPref.apply();

@@ -26,4 +26,18 @@
     <string name="confirm_delete">Confirm Delete</string>
     <string name="are_aou_sure_delete">Are you sure to delete all products?</string>
     <string name="standard_currency" translatable="false">€</string>
+    <string name="error_loading">Error loading config</string>
+    <string name="enter_code">enter code</string>
+    <string name="config_instruction">Enter code to load configuration.</string>
+    <string name="export_as_text">Export as text</string>
+    <string name="export_title">Simple Cashier\'s Calculator Export</string>
+    <string name="copy_to_clipboard">Copy To Clipboard</string>
+    <string name="share_code">Share code</string>
+    <string name="generate_qr_code">Generate QR-Code</string>
+    <string name="instruction_export">Code successfully generated. You can enter this code on any device to load this configuration. How do you like to share the code?</string>
+    <string name="done">Done</string>
+    <string name="export_config">Export Configuration</string>
+    <string name="import_config">Import Configuration</string>
+    <string name="import_button">Import</string>
+    <string name="cancel">Cancel</string>
 </resources>

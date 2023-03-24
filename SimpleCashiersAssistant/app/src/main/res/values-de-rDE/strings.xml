@@ -25,4 +25,5 @@
     <string name="no">Nein</string>
     <string name="confirm_delete">Löschen bestätigen</string>
     <string name="are_aou_sure_delete">Bist du dir sicher, dass du alle Produkte löschen möchtest?</string>
+    <string name="error_loading">Fehler beim Laden</string>
 </resources>

@@ -5,8 +5,11 @@ import androidx.gridlayout.widget.GridLayout;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("DefaultLocale")
     private void updatePrice(){
-        sumView.setText(String.format("%.2f %s", sum, currency));
+        sumView.setText(String.format("%.2f %s", sum, currency)); //FIXME unterschiedliche Darstellung nach Währung
     }
 
     private boolean longClick(Product p){
@@ -118,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
     private void save(){
         LinkedList<String> productNames = new LinkedList<>();
         for (Product p : products) {
-            p.save();
+            p.save(this);
             productNames.add(p.title);
         }
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settings_setting_file), Context.MODE_PRIVATE);
@@ -165,7 +168,11 @@ public class MainActivity extends AppCompatActivity {
         builder.setView(v).setTitle(R.string.settings);
         builder.setPositiveButton(R.string.apply, null);
         Button deleteAll = v.findViewById(R.id.buttonDeleteAll);
+        Button bImport = v.findViewById(R.id.buttonImport);
+        Button bExport = v.findViewById(R.id.buttonExport);
         deleteAll.setOnClickListener(view -> deleteAll());
+        bImport.setOnClickListener(view -> onImport());
+        bExport.setOnClickListener(view -> onExport());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -178,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             }
             setGrid(rows, columns);
             this.currency = currency[0].getText().toString();
-            SharedPreferences.Editor prefs = getSharedPreferences("settings", MODE_PRIVATE).edit();
+            SharedPreferences.Editor prefs = getSharedPreferences(getString(R.string.settings_setting_file), MODE_PRIVATE).edit();
             prefs.putString(getString(R.string.settings_currency), this.currency);
             prefs.apply();
             update();
@@ -283,7 +290,105 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void loadFromString(String s){
-        String[] elements = s.split(getString(R.string.seperator));
+    private void onImport(){
+        View v = getLayoutInflater().inflate(R.layout.import_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.import_config)
+                .setView(v)
+                .setPositiveButton(R.string.import_button, null)
+                .setNegativeButton(R.string.cancel, null).create();
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(view -> {
+            EditText code = v.findViewById(R.id.editTextImportCode);
+            String s = code.getText().toString();
+            if(loadFromString(s)){
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void onExport(){
+        String exportData = saveToString();
+
+        View v = getLayoutInflater().inflate(R.layout.export_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.export_config)
+                .setView(v)
+                .setPositiveButton(R.string.done, null).create();
+        dialog.show();
+
+        v.findViewById(R.id.buttonExportClipboard).setOnClickListener(view -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(getString(R.string.export_title), exportData);
+            clipboard.setPrimaryClip(clip);
+        });
+        v.findViewById(R.id.buttonExportShare).setOnClickListener(view -> {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TITLE, R.string.export_title);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, exportData);
+            sendIntent.setType("text/plain");
+
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
+        });
+        v.findViewById(R.id.buttonExportQR).setOnClickListener(view -> {
+
+            Toast.makeText(this, "not yet implemented", Toast.LENGTH_LONG).show();
+        });
+    }
+
+    private static final int CONFIG_HEAD_SIZE = 3;
+
+    private String saveToString(){
+        String sep = getString(R.string.seperator);
+        StringBuilder builder = new StringBuilder();
+        builder.append(rows).append(sep)
+                .append(columns).append(sep)
+                .append(products.size()).append(sep);
+        for (Product p : products) {
+            builder.append(p.title).append(sep);
+        }
+        for (Product p : products) {
+            builder.append(p.price).append(sep);
+        }
+        return builder.toString();
+    }
+
+    private boolean loadFromString(String s){
+        List<Product> newProducts = new LinkedList<>();
+        int rows, columns, nProducts;
+        try {
+            String[] elements = s.split(getString(R.string.seperator));
+            if(elements.length < CONFIG_HEAD_SIZE){
+                Toast.makeText(getApplicationContext(), R.string.error_loading, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            rows = Integer.parseInt(elements[0]);
+            columns = Integer.parseInt(elements[1]);
+            nProducts = Integer.parseInt(elements[2]);
+            if (elements.length < CONFIG_HEAD_SIZE + nProducts * 2 || rows <= 0 || columns <= 0){
+                Toast.makeText(getApplicationContext(), R.string.error_loading, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            for (int i = 0; i < nProducts; i++){
+                Product p = new Product(
+                        elements[CONFIG_HEAD_SIZE+i],
+                        Float.parseFloat(elements[CONFIG_HEAD_SIZE+nProducts+i]));
+                newProducts.add(p);
+            }
+        }
+        catch (Exception e){
+            Toast.makeText(getApplicationContext(), R.string.error_loading, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        // apply loaded data
+        products.clear();
+        setGrid(rows, columns);
+        products.addAll(newProducts);
+        save();
+        update();
+        updatePrice();
+        return true;
     }
 }
