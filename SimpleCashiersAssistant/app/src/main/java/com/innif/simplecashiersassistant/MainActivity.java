@@ -32,6 +32,11 @@ import java.util.Set;
 //TODO custom colors
 //TODO import-export QR
 //TODO import-export File
+//TODO different configurations
+//TODO Rabatt-Buttons
+//TODO Kategorien
+//TODO Buttons mit Freier Preisangabe
+//TODO Logs & Statistics
 
 public class MainActivity extends AppCompatActivity {
     List<Product> products = new LinkedList<>();
@@ -54,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
         Button buttonClear = findViewById(R.id.bClear);
         buttonClear.setOnClickListener((view)->clear());
         findViewById(R.id.bSettings).setOnClickListener(this::onOptionsClicked);
-
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_setting_file), MODE_PRIVATE);
 
         load();
         setGrid(rows, columns);
@@ -120,11 +123,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void save(){
-        String settings = saveToString();
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settings_setting_file), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.settings_string), settings);
-        editor.apply();
+        Thread thread = new Thread(() -> {
+            String settings = saveToString();
+            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settings_setting_file), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(getString(R.string.settings_string), settings);
+            editor.apply();
+        });
+        thread.start();
     }
 
     private void load(){

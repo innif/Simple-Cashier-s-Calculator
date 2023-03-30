@@ -40,4 +40,5 @@
     <string name="import_button">Import</string>
     <string name="cancel">Cancel</string>
     <string name="not_implemented">not yet implemented</string>
+    <string name="enter_currency">Enter Currency</string>
 </resources>

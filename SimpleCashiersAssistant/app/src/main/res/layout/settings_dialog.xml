@@ -31,7 +31,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:hint="@string/currency"
+                android:hint="@string/enter_currency"
                 android:importantForAutofill="no" />
 
         </TableRow>
